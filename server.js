@@ -1,0 +1,125 @@
+const express = require('express');
+const app = express();
+app.use(express.urlencoded());
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+const kaltura = require('kaltura-client');
+const config = new kaltura.Configuration();
+const client = new kaltura.Client(config);
+
+
+let secret = "8350c4e475539d57ed054817d99efad6";
+let userId = "mjmuhamm93@gmail.com";
+let type = kaltura.enums.SessionType.ADMIN;
+let partnerId = 4377653;
+let expiry = 86400;
+let privileges = "";
+
+
+
+
+
+
+
+
+
+// kaltura.services.media.add(entry)
+// .execute(client)
+// .then(result => {
+//     console.log(result);
+//
+// 	let entryId = result.id;
+// 	let resource = new kaltura.objects.UrlResource();
+// 	resource.url = "https://example.com/catVideo.mp4";
+//
+// 	kaltura.services.media.addContent(entryId, resource)
+// 	.execute(client)
+// 	.then(result => {
+// 	    console.log(result);
+// 	});
+// });
+
+
+
+
+
+
+
+app.post('/add-video',  async (req, res) => {
+
+
+kaltura.services.uploadToken.add(uploadToken)
+.execute(client)
+.then(token => {
+    console.log(token);
+});
+  kaltura.services.media.add(entry)
+.execute(client)
+.then(result => {
+    console.log(result);
+
+	let entryId = result.id;
+	let resource = new kaltura.objects.UrlResource();
+	resource.url = req.body.video;
+
+	kaltura.services.media.addContent(entryId, resource)
+	.execute(client)
+	.then(result => {
+	    console.log(result);
+	});
+});
+});
+
+
+app.post('/get-user-videos', async (req, res) => {
+  kaltura.services.session.start(secret, userId, type, partnerId, expiry, privileges)
+  .execute(client)
+  .then(result => {
+    client.setKs(result)
+
+    let filter = new kaltura.objects.MediaEntryFilter();
+  filter.nameLike = req.body.name;
+  let pager = new kaltura.objects.FilterPager();
+
+  kaltura.services.media.listAction(filter, pager)
+  .execute(client)
+  .then(result => {
+    res.json({
+      videos: result.objects
+    })
+      console.log(result.objects);
+  });
+  });
+
+});
+
+app.post('/get-videos', async (req, res) => {
+
+  kaltura.services.session.start(secret, userId, type, partnerId, expiry, privileges)
+  .execute(client)
+  .then(result => {
+    client.setKs(result)
+
+  let filter = new kaltura.objects.MediaEntryFilter();
+  let pager = new kaltura.objects.FilterPager();
+
+  kaltura.services.media.listAction(filter, pager)
+  .execute(client)
+  .then(result => {
+    res.json({
+      videos: result.objects
+    })
+      console.log(result.objects);
+  });
+  });
+
+});
+
+
+const PORT = process.env.PORT || 4242
+
+app.listen(PORT, () => {
+  console.log(`Started server on ${ PORT }`);
+})
