@@ -117,6 +117,41 @@ app.post('/get-videos', async (req, res) => {
 
 });
 
+app.post('/upload-video', async (req,res) => {
+  console.log(req.body.name);
+  console.log(req.body.description);
+  console.log(req.body.videoUrl);
+  kaltura.services.session.start(secret, userId, type, partnerId, expiry, privileges)
+  .execute(client)
+  .then(result => {
+    client.setKs(result)
+
+    	  let mediaEntry = new kaltura.objects.MediaEntry();
+    		mediaEntry.name = req.body.name;
+    		mediaEntry.description = req.body.description;
+    		mediaEntry.mediaType = kaltura.enums.MediaType.VIDEO;
+
+    		kaltura.services.media.add(mediaEntry)
+    		.execute(client)
+    		.then(entry => {
+
+    let entryId = entry.id;
+    let resource = new kaltura.objects.UrlResource();
+    resource.url = req.body.videoUrl;
+
+    kaltura.services.media.addContent(entryId, resource)
+    .execute(client)
+    .then(result => {
+      res.json({
+        all_good: "good"
+      });
+        console.log(result);
+    });
+});
+
+  });
+});
+
 
 const PORT = process.env.PORT || 4242
 
