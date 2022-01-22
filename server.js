@@ -103,6 +103,8 @@ app.post('/get-videos', async (req, res) => {
     client.setKs(result)
 
   let filter = new kaltura.objects.MediaEntryFilter();
+  filter.createdAtLessThanOrEqual = req.body.created_at;
+  filter.orderBy = '-createdAt';
   let pager = new kaltura.objects.FilterPager();
 
   kaltura.services.media.listAction(filter, pager)
@@ -111,7 +113,7 @@ app.post('/get-videos', async (req, res) => {
     res.json({
       videos: result.objects
     })
-      console.log(result.objects);
+      console.log(result.objects.length);
   });
   });
 
