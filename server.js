@@ -113,7 +113,7 @@ app.post('/get-videos', async (req, res) => {
     res.json({
       videos: result.objects
     })
-      console.log(result.objects.length);
+      console.log(result.objects);
   });
   });
 
@@ -152,6 +152,26 @@ app.post('/upload-video', async (req,res) => {
 });
 
   });
+});
+
+app.post('/delete-video', async (req, res) => {
+
+  kaltura.services.session.start(secret, userId, type, partnerId, expiry, privileges)
+  .execute(client)
+  .then(result => {
+    client.setKs(result)
+
+  let entryId = req.body.entryId;
+
+kaltura.services.media.deleteAction(entryId)
+.execute(client)
+.then(result => {
+    console.log(result);
+    res.json({
+      good: "all_good"
+    })
+});
+});
 });
 
 
