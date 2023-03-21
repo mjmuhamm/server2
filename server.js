@@ -47,31 +47,6 @@ let privileges = "";
 
 
 
-app.post('/add-video',  async (req, res) => {
-
-
-kaltura.services.uploadToken.add(uploadToken)
-.execute(client)
-.then(token => {
-    console.log(token);
-});
-  kaltura.services.media.add(entry)
-.execute(client)
-.then(result => {
-    console.log(result);
-
-	let entryId = result.id;
-	let resource = new kaltura.objects.UrlResource();
-	resource.url = req.body.video;
-
-	kaltura.services.media.addContent(entryId, resource)
-	.execute(client)
-	.then(result => {
-	    console.log(result);
-	});
-});
-});
-
 
 app.post('/get-user-videos', async (req, res) => {
   kaltura.services.session.start(secret, userId, type, partnerId, expiry, privileges)
@@ -112,8 +87,7 @@ app.post('/get-videos', async (req, res) => {
   .then(result => {
     res.json({
       videos: result.objects
-    })
-      console.log(result.objects);
+    });
   });
   });
 
@@ -175,7 +149,7 @@ kaltura.services.media.deleteAction(entryId)
 });
 
 
-const PORT = process.env.PORT || 4242
+const PORT = process.env.PORT || 4243
 
 app.listen(PORT, () => {
   console.log(`Started server on ${ PORT }`);
