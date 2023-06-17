@@ -119,7 +119,7 @@ app.post('/upload-video', async (req,res) => {
     .execute(client)
     .then(result => {
       res.json({
-        all_good: "good"
+        entry_id: entryId
       });
         console.log(result);
     });
